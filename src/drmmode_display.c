@@ -107,7 +107,6 @@ struct drmmode_output_priv {
 
 static void drmmode_output_dpms(xf86OutputPtr output, int mode);
 static Bool resize_scanout_bo(ScrnInfoPtr pScrn, int width, int height);
-static Bool drmmode_set_mode_major(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, int x, int y);
 
 static struct drmmode_rec *
 drmmode_from_scrn(ScrnInfoPtr pScrn)
@@ -180,42 +179,9 @@ drmmode_ConvertToKMode(ScrnInfoPtr pScrn, drmModeModeInfo *kmode,
 }
 
 static void
-drmmode_crtc_dpms(xf86CrtcPtr crtc, int mode)
+drmmode_crtc_dpms(xf86CrtcPtr drmmode_crtc, int mode)
 {
-	struct drmmode_crtc_private_rec *drmmode_crtc = crtc->driver_private;
-	struct drmmode_rec *drmmode = drmmode_crtc->drmmode;
-	ScrnInfoPtr pScrn = crtc->scrn;
-
-	DEBUG_MSG("Setting dpms mode %d on crtc %d", mode, drmmode_crtc->crtc_id);
-
-	switch (mode) {
-	case DPMSModeOn:
-		drmmode_set_mode_major(crtc, &crtc->mode, crtc->rotation, crtc->x, crtc->y);
-		break;
-
-	/* unimplemented modes fall through to the next lowest mode */
-	case DPMSModeStandby:
-	case DPMSModeSuspend:
-	case DPMSModeOff:
-		if (drmModeSetCrtc(drmmode->fd, drmmode_crtc->crtc_id, 0, 0, 0, 0, 0, NULL)) {
-			ERROR_MSG("drm failed to disable crtc %d", drmmode_crtc->crtc_id);
-		} else {
-			int i;
-			xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(pScrn);
-
-			/* set dpms off for all outputs for this crtc */
-			for (i = 0; i < xf86_config->num_output; i++) {
-				xf86OutputPtr output = xf86_config->output[i];
-				if (output->crtc != crtc)
-					continue;
-				drmmode_output_dpms(output, mode);
-			}
-		}
-		break;
-	default:
-		ERROR_MSG("bad dpms mode %d for crtc %d", mode, drmmode_crtc->crtc_id);
-		return;
-	}
+	/* TODO: MIDEGL-1431: Implement this function */
 }
 
 static int
