@@ -1304,7 +1304,7 @@ drmmode_output_init(ScrnInfoPtr pScrn, struct drmmode_rec *drmmode, int num)
 	if (!connector)
 		goto exit;
 
-	encoders = calloc(sizeof(drmModeEncoderPtr), connector->count_encoders);
+	encoders = calloc( connector->count_encoders, sizeof(drmModeEncoderPtr) );
 	if (!encoders)
 		goto free_connector_exit;
 
