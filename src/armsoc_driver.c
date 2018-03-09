@@ -1335,7 +1335,7 @@ ARMSOCEnterVT(VT_FUNC_ARGS_DECL)
 	TRACE_ENTER();
 
 	for (i = 1; i < currentMaxClients; i++) {
-		if (clients[i])
+		if (clients[i] && !clients[i]->clientGone)
 			AttendClient(clients[i]);
 	}
 
@@ -1370,7 +1370,7 @@ ARMSOCLeaveVT(VT_FUNC_ARGS_DECL)
 	TRACE_ENTER();
 
 	for (i = 1; i < currentMaxClients; i++) {
-		if (clients[i])
+		if (clients[i] && !clients[i]->clientGone)
 			IgnoreClient(clients[i]);
 	}
 
